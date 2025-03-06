@@ -196,6 +196,12 @@
             .poster ul li {
                 margin: 5px 0;
             }
+
+            .poster-header {
+                display: flex;
+                justify-content: space-between;
+                width: 100%;
+            }
         </style>
     </head>
     <body>
@@ -251,9 +257,11 @@
         <div id="poster-template" style="display: none;">
             <div class="poster">
                 <img id="poster-artwork" src="" alt="Album Artwork" />
-                <h1 id="poster-album-name"></h1>
-                <h2 id="poster-artist-name"></h2>
-                <p id="poster-album-year"></p>
+                <div class="poster-header">
+                    <h1 id="poster-album-name"></h1>
+                    <p id="poster-album-year"></p>
+                    <h2 id="poster-artist-name"></h2>
+                </div>
                 <ul id="poster-tracklist"></ul>
                 <p id="poster-copyright"></p>
             </div>
