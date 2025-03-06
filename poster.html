@@ -439,6 +439,7 @@
                     console.error(error);
                     // Hide loader on error
                     document.getElementById("loader").style.display = "none";
+                });
             // Apply dark mode styling if selected
             if (darkMode) {
                 document.body.classList.add("dark-mode");
@@ -450,8 +451,8 @@
                 document.querySelector(".options-div").classList.remove("dark-mode");
             }
                 document.body.classList.remove("dark-mode");
-            }
         }
+        
 
         // Function to save the generated poster image
         function saveImage() {
