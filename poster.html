@@ -327,21 +327,21 @@
         function calculateColumns(totalSongs) {
             let desiredColumns = parseInt(document.getElementById("column-preference").value) || 4;
             let columns = desiredColumns;
-            let songsPerColumn = Math.floor(totalSongs / columns);
+            let songsPerColumn = Math.ceil(totalSongs / columns);
 
-            if (totalSongs % columns === 0) {
-                return { columns: columns, songsPerColumn: songsPerColumn };
-            } else {
-                // Try to find an alternative column count that divides evenly
-                for (let cols = desiredColumns; cols <= totalSongs; cols++) {
-                    if (totalSongs % cols === 0) {
-                        return { columns: cols, songsPerColumn: totalSongs / cols };
-                    }
-                }
-                // Fall back: use rounded-up songs per column
-                songsPerColumn = Math.ceil(totalSongs / columns);
-                return { columns: columns, songsPerColumn: songsPerColumn };
+            // Ensure no more than 8 songs per column
+            while (songsPerColumn > 8 && columns < totalSongs) {
+            columns++;
+            songsPerColumn = Math.ceil(totalSongs / columns);
             }
+
+            // Adjust columns if the total songs do not fit perfectly
+            while (totalSongs % columns !== 0 && columns > 1) {
+            columns--;
+            songsPerColumn = Math.ceil(totalSongs / columns);
+            }
+
+            return { columns: columns, songsPerColumn: songsPerColumn };
         }
 
         // Main function to generate the poster
