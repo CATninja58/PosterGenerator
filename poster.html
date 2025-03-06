@@ -370,8 +370,13 @@
                     document.getElementById("poster-copyright").innerText = "";
                 }
 
+                // Temporarily show the poster template
+                document.getElementById("poster-template").style.display = "block";
+
                 // Take screenshot
                 html2canvas(document.querySelector("#poster-template .poster")).then(canvas => {
+                    // Hide the poster template again
+                    document.getElementById("poster-template").style.display = "none";
                     let poster = document.getElementById("poster-display");
                     poster.src = canvas.toDataURL("image/png");
                     document.getElementById("image-display").style.display = "flex";
