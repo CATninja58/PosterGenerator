@@ -334,13 +334,7 @@
                 columns++;
                 songsPerColumn = Math.ceil(totalSongs / columns);
             }
-
-            // Adjust columns if the total songs do not fit perfectly
-            while (totalSongs % columns !== 0 && columns > 1) {
-                columns--;
-                songsPerColumn = Math.ceil(totalSongs / columns);
-            }
-
+            
             return { columns: columns, songsPerColumn: songsPerColumn };
         }
 
@@ -449,7 +443,6 @@
                 document.querySelector(".poster-div").classList.remove("dark-mode");
                 document.querySelector(".options-div").classList.remove("dark-mode");
             }
-                document.body.classList.remove("dark-mode");
         }
         
 
