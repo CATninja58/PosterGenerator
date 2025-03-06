@@ -324,9 +324,8 @@
         // Utility: Convert mm:ss to milliseconds
         const toMilliseconds = (hrs, min, sec) => (hrs * 60 * 60 + min * 60 + sec) * 1000;
 
-            let desiredColumns = parseInt(document.getElementById("column-preference").value) || 4;
         function calculateColumns(totalSongs) {
-            let desiredColumns = parseInt(document.getElementById("column-preference").value) || 3;
+            let desiredColumns = parseInt(document.getElementById("column-preference").value) || 4;
             let columns = desiredColumns;
             let songsPerColumn = Math.floor(totalSongs / columns);
 
