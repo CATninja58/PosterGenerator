@@ -1,524 +1,399 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <script defer src="/_vercel/insights/script.js"></script>
-    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
-    <title>Poster</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="This generator allows you to instantly create posters for any music album for absolutely free!">
-    <style>
-        /* Global Styles */
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
-            background-color: #f0f0f0;
-            color: #333;
-        }
+    <head>
+        <meta charset="UTF-8">
+        <script defer src="/_vercel/insights/script.js"></script>
+        <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+        <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+        <title>Poster</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="This generator allows you to instantly create posters for any music album for absolutely free!">
+        <style>
+            body {
+                margin: 0;
+                padding: 0;
+                font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue",sans-serif;
+            }
 
-        .main {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            display: flex;
-            flex-direction: row;
-        }
+            .main {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100vw;
+                height: 100vh;
+            }
 
-        .options-div {
-            width: 50%;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            background-color: #ffffff;
-            padding: 20px;
-            box-sizing: border-box;
-        }
+            .options-div {
+                float: left;
+                width: 50%;
+                height: 100%;
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+                background-color: #ffffff;
+            }
 
-        .options-div form {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: flex-start;
-            margin-right: 50px;
-        }
+            .options-div form {
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                margin-right: 50px;
+            }
 
-        .options-div label {
-            margin-top: 10px;
-            font-size: 18px;
-        }
+            .poster-div {
+                float: right;
+                width: 50%;
+                height: 100%;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                background-color: rgb(15, 20, 30);
+                overflow-y: scroll;
+            }
 
-        .options-div input[type="text"],
-        .options-div input[type="number"],
-        .options-div textarea {
-            padding: 8px;
-            margin-top: 5px;
-            width: 90%;
-            font-size: 16px;
-        }
+            #image-res {
+                color: #ffffff;
+                font-size: 20px;
+                margin-top: 20px;
+            }
 
-        .options-div input[type="checkbox"] {
-            margin-top: 10px;
-        }
+            #image-display {
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                overflow-y: scroll;
+            }
 
-        .poster-div {
-            width: 50%;
-            height: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background-color: rgb(15, 20, 30);
-            overflow-y: auto;
-            padding: 20px;
-            box-sizing: border-box;
-        }
+            #image-display img {
+                aspect-ratio: 0.75;
+                height: 650px;
+            }
 
-        #image-res {
-            color: #ffffff;
-            font-size: 20px;
-            margin-top: 20px;
-        }
+            #image-display button {
+                padding: 10px 20px;
+                border-radius: 5px;
+                border: none;
+                color: rgb(15, 20, 30);
+                background-color: #ffffff;
+                font-size: 20px;
+                cursor: pointer;
+                margin-top: 20px;
+            }
 
-        #image-display {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            overflow-y: auto;
-        }
+            #image-display button:hover {
+                background-color: rgb(240, 240, 240);
+            }
 
-        #image-display img {
-            aspect-ratio: 0.75;
-            height: 650px;
-            max-width: 90%;
-        }
+            .lds-ellipsis {
+                display: inline-block;
+                position: relative;
+                width: 80px;
+                height: 80px;
+            }
 
-        #image-display button {
-            padding: 10px 20px;
-            border-radius: 5px;
-            border: none;
-            color: rgb(15, 20, 30);
-            background-color: #ffffff;
-            font-size: 20px;
-            cursor: pointer;
-            margin-top: 20px;
-        }
+            .lds-ellipsis div {
+                position: absolute;
+                top: 33px;
+                width: 13px;
+                height: 13px;
+                border-radius: 50%;
+                background: #ffffff;
+                animation-timing-function: cubic-bezier(0, 1, 1, 0);
+            }
 
-        #image-display button:hover {
-            background-color: rgb(240, 240, 240);
-        }
+            .lds-ellipsis div:nth-child(1) {
+                left: 8px;
+                animation: lds-ellipsis1 0.6s infinite;
+            }
 
-        .lds-ellipsis {
-            display: inline-block;
-            position: relative;
-            width: 80px;
-            height: 80px;
-        }
+            .lds-ellipsis div:nth-child(2) {
+                left: 8px;
+                animation: lds-ellipsis2 0.6s infinite;
+            }
 
-        .lds-ellipsis div {
-            position: absolute;
-            top: 33px;
-            width: 13px;
-            height: 13px;
-            border-radius: 50%;
-            background: #ffffff;
-            animation-timing-function: cubic-bezier(0, 1, 1, 0);
-        }
+            .lds-ellipsis div:nth-child(3) {
+                left: 32px;
+                animation: lds-ellipsis2 0.6s infinite;
+            }
 
-        .lds-ellipsis div:nth-child(1) {
-            left: 8px;
-            animation: lds-ellipsis1 0.6s infinite;
-        }
+            .lds-ellipsis div:nth-child(4) {
+                left: 56px;
+                animation: lds-ellipsis3 0.6s infinite;
+            }
 
-        .lds-ellipsis div:nth-child(2) {
-            left: 8px;
-            animation: lds-ellipsis2 0.6s infinite;
-        }
+            @keyframes lds-ellipsis1 {
+                0% {
+                    transform: scale(0);
+                }
+                100% {
+                    transform: scale(1);
+                }
+            }
 
-        .lds-ellipsis div:nth-child(3) {
-            left: 32px;
-            animation: lds-ellipsis2 0.6s infinite;
-        }
+            @keyframes lds-ellipsis3 {
+                0% {
+                    transform: scale(1);
+                }
+                100% {
+                    transform: scale(0);
+                }
+            }
 
-        .lds-ellipsis div:nth-child(4) {
-            left: 56px;
-            animation: lds-ellipsis3 0.6s infinite;
-        }
+            @keyframes lds-ellipsis2 {
+                0% {
+                    transform: translate(0, 0);
+                }
+                100% {
+                    transform: translate(24px, 0);
+                }
+            }
 
-        @keyframes lds-ellipsis1 {
-            0% { transform: scale(0); }
-            100% { transform: scale(1); }
-        }
+            #generate-div {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                margin-bottom: 20px;
+            }
 
-        @keyframes lds-ellipsis3 {
-            0% { transform: scale(1); }
-            100% { transform: scale(0); }
-        }
+            #generate-div button {
+                padding: 10px 20px;
+                border-radius: 5px;
+                border: none;
+                background-color: rgb(15, 20, 30);
+                color: #ffffff;
+                font-size: 20px;
+                cursor: pointer;
+            }
 
-        @keyframes lds-ellipsis2 {
-            0% { transform: translate(0, 0); }
-            100% { transform: translate(24px, 0); }
-        }
+            .poster {
+                width: 800px;
+                height: 1200px;
+                background-color: white;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                padding: 20px;
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            }
 
-        #generate-div {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-bottom: 20px;
-        }
+            .poster img {
+                width: 100%;
+                height: auto;
+            }
 
-        #generate-div button {
-            padding: 10px 20px;
-            border-radius: 5px;
-            border: none;
-            background-color: rgb(15, 20, 30);
-            color: #ffffff;
-            font-size: 20px;
-            cursor: pointer;
-        }
+            .poster h1, .poster h2, .poster p {
+                margin: 10px 0;
+            }
 
-        /* Additional styles for dark mode option */
-        .dark-mode {
-            background-color: #1a1a1a;
-            color: #f0f0f0;
-        }
+            .poster ul {
+                list-style: none;
+                padding: 0;
+            }
 
-        .dark-mode .options-div {
-            background-color: #2a2a2a;
-        }
+            .poster ul li {
+                margin: 5px 0;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="main">
+            <div class="options-div">
+                <form>
+                    <label for="album-name">
+                        Album Name
+                    </label>
+                    <input id="album-name" />
+                    <label for="album-year">
+                        Album Year
+                    </label>
+                    <input id="album-year" />
+                    <label for="album-artist">
+                        Album Artist
+                    </label>
+                    <input id="album-artist" />
+                    <label for="copyright">
+                        Display copyright info?
+                    </label>
+                    <input type="checkbox" id="copyright">
+                    <label for="tracklist">
+                        Tracklist
+                    </label>
+                    <div id="tracklist">
+                        <div class="tracklist-item">
+                            <input class="tracklist-item-name" />
+                            <input class="tracklist-item-duration" />
+                        </div>
+                    </div>
+                </form>
 
-        .dark-mode .poster-div {
-            background-color: #121212;
-        }
-
-        .dark-mode input,
-        .dark-mode label,
-        .dark-mode textarea {
-            color: #f0f0f0;
-            background-color: #2a2a2a;
-        }
-
-        .tracklist-item {
-            display: flex;
-            justify-content: space-between;
-            width: 100%;
-            margin-top: 10px;
-        }
-
-        .tracklist-item input {
-            width: 48%;
-        }
-
-        /* End of dark mode styles */
-    </style>
-</head>
-<body>
-    <!-- Main Container -->
-    <div class="main">
-        <!-- Options Section -->
-        <div class="options-div">
-            <!-- Form for album details and options -->
-            <form>
-                <label for="album-name">Album Name</label>
-                <input id="album-name" type="text" />
-
-                <label for="album-year">Album Year</label>
-                <input id="album-year" type="text" />
-
-                <label for="album-artist">Album Artist</label>
-                <input id="album-artist" type="text" />
-
-                <label for="copyright">Display copyright info?</label>
-                <input type="checkbox" id="copyright" />
-
-                <!-- New input for column layout preference -->
-                <label for="column-preference">Column Preference (auto-calculated if empty)</label>
-                <input id="column-preference" type="number" placeholder="Optional: e.g., 3 or 4" />
-
-                <!-- New dark mode toggle -->
-                <label for="dark-mode">Dark Mode Poster?</label>
-                <input type="checkbox" id="dark-mode" />
-
-                <!-- Extra spacing for clarity -->
-                <br><br>
-                <label for="notes">Additional Notes (optional):</label>
-                <textarea id="notes" rows="3" style="width: 90%; font-size: 16px;" placeholder="Any additional instructions"></textarea>
-            </form>
-
-            <!-- Generate Poster Button -->
-            <div id="generate-div">
-                <button type="button" onclick="generatePoster()">Generate Poster</button>
+                <div id="generate-div">
+                    <button type="button" onclick="generatePoster()">
+                        Generate Poster
+                    </button>
+                </div>
             </div>
-        </div>
-
-        <!-- Poster Display Section -->
-        <div class="poster-div">
-            <div id="image-display" style="display: none;">
-                <img id="poster-display" src="" alt="Poster" />
-                <span id="image-res">Resolution: </span>
-                <button type="button" onclick="saveImage()">Save Image</button>
-            </div>
-            <div id="loader" style="display: none">
-                <div class="lds-ellipsis">
-                    <div></div>
-                    <div></div>
-                    <div></div>
-                    <div></div>
+            <div class="poster-div">
+                <div id="image-display" style="display: none;">
+                    <img id="poster-display" src="" alt="Poster" />
+                    <span id="image-res">Resolution: </span>
+                    <button type="button" onclick="saveImage()">
+                        Save Image
+                    </button>
+                </div>
+                <div id="loader" style="display: none">
+                    <div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
                 </div>
             </div>
         </div>
-    </div>
+        <div id="poster-template" style="display: none;">
+            <div class="poster">
+                <img id="poster-artwork" src="" alt="Album Artwork" />
+                <h1 id="poster-album-name"></h1>
+                <h2 id="poster-artist-name"></h2>
+                <p id="poster-album-year"></p>
+                <ul id="poster-tracklist"></ul>
+                <p id="poster-copyright"></p>
+            </div>
+        </div>
+        <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+        <script>
+            let url = new URL(window.location.href);
+            let collectionId = url.searchParams.get("id");
 
-    <!-- External Toastify JS for notifications -->
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
-    <script>
-        // Get URL parameters to retrieve the collection ID from the search page
-        let url = new URL(window.location.href);
-        let collectionId = url.searchParams.get("id");
-        let data = null;
+            let data = null;
 
-        // Fetch album and track data from the iTunes API using the collection ID
-        fetch(`https://itunes.apple.com/lookup?id=${collectionId}&entity=song`)
-            .then(response => response.json())
-            .then(res => {
-                data = res;
-                // Update page title and meta description with album details
-                document.title = `${data.results[0].collectionName} Poster`;
-                document.querySelector("meta[name='description']").content = `Generated poster for ${data.results[0].collectionName} by ${data.results[0].artistName}`;
+            fetch(`https://itunes.apple.com/lookup?id=${collectionId}&entity=song`)
+                .then(response => response.json())
+                .then(res => {
+                    data = res;
 
-                // Populate form fields with album information
-                document.getElementById("album-name").value = data.results[0].collectionName;
-                document.getElementById("album-year").value = data.results[0].releaseDate.substring(0, 4);
-                document.getElementById("album-artist").value = data.results[0].artistName;
+                    // Change page title
+                    document.title = `${data.results[0].collectionName} Poster`;
 
-                // Populate the tracklist dynamically
-                let tracklist = document.getElementById("tracklist");
-                if (tracklist) {
+                    // Change meta description
+                    document.querySelector("meta[name='description']").content = `Generated poster for ${data.results[0].collectionName} by ${data.results[0].artistName}`;
+
+                    // Populate form
+                    document.getElementById("album-name").value = data.results[0].collectionName;
+                    document.getElementById("album-year").value = data.results[0].releaseDate.substring(0, 4);
+                    document.getElementById("album-artist").value = data.results[0].artistName;
+
+                    // Populate tracklist
+                    let tracklist = document.getElementById("tracklist");
                     tracklist.innerHTML = "";
-                } else {
-                    tracklist = document.createElement("div");
-                    tracklist.id = "tracklist";
-                    document.querySelector("form").appendChild(tracklist);
-                }
-                for (let i = 1; i < data.results.length; i++) {
-                    let track = data.results[i];
-                    let tracklistItem = document.createElement("div");
-                    tracklistItem.classList.add("tracklist-item");
-                    tracklistItem.innerHTML = `
-                        <input class="tracklist-item-name" type="text" value="${track.trackName}" />
-                        <input class="tracklist-item-duration" type="text" value="${new Date(track.trackTimeMillis).toISOString().substr(14, 5)}" />
-                    `;
-                    tracklist.appendChild(tracklistItem);
-                }
+                    for (let i = 1; i < data.results.length; i++) {
+                        let track = data.results[i];
+                        let tracklistItem = document.createElement("div");
+                        tracklistItem.classList.add("tracklist-item");
+                        tracklistItem.innerHTML = `
+                            <input class="tracklist-item-name" value="${track.trackName}" />
+                            <input class="tracklist-item-duration" value="${new Date(track.trackTimeMillis).toISOString().substr(14, 5)}" />
+                        `;
+                        tracklist.appendChild(tracklistItem);
+                    }
 
-                // Automatically generate the poster after loading album data
-                generatePoster();
-            })
-            .catch(error => {
-                console.error(error);
-            });
-
-        // Utility: Convert mm:ss to milliseconds
-        const toMilliseconds = (hrs, min, sec) => (hrs * 60 * 60 + min * 60 + sec) * 1000;
-
-        function calculateColumns(totalSongs) {
-            let desiredColumns = parseInt(document.getElementById("column-preference").value) || Math.ceil(totalSongs / 8);
-            let columns = desiredColumns;
-            let songsPerColumn = Math.ceil(totalSongs / columns);
-
-            // Ensure no more than 8 songs per column
-            while (songsPerColumn > 8 && columns < totalSongs) {
-                columns++;
-                songsPerColumn = Math.ceil(totalSongs / columns);
-            }
-
-            return { columns: 3, songsPerColumn: 7 };
-        }
-
-        // Main function to generate the poster
-        function generatePoster() {
-            // Validate tracklist entries with regex for mm:ss format
-            var tracklistItems = Array.from(document.querySelectorAll(".tracklist-item"));
-            let tracklistValid = true;
-            tracklistItems.forEach((item, index) => {
-                let duration = item.querySelector(".tracklist-item-duration").value;
-                let name = item.querySelector(".tracklist-item-name").value;
-                if (!name && !duration) {
-                    tracklistItems.splice(index, 1);
-                } else if (!/^\d{2}:\d{2}$/.test(duration)) {
-                    tracklistValid = false;
-                    Toastify({
-                        text: `Track ${index} duration must be in the format mm:ss`,
-                        duration: 3000,
-                        gravity: "top",
-                        position: "center",
-                        backgroundColor: "linear-gradient(to right, #ff0000, #ff0000)",
-                        stopOnFocus: true
-                    }).showToast();
-                } else if (!name) {
-                    tracklistValid = false;
-                    Toastify({
-                        text: `Track ${index}'s name is missing`,
-                        duration: 3000,
-                        gravity: "top",
-                        position: "center",
-                        backgroundColor: "linear-gradient(to right, #ff0000, #ff0000)",
-                        stopOnFocus: true
-                    }).showToast();
-                }
-            });
-
-            if (!tracklistValid) {
-                return;
-            }
-
-            // Show loader while generating the poster
-            document.getElementById("loader").style.display = "block";
-            // Hide the image display while waiting for the new poster
-            document.getElementById("image-display").style.display = "none";
-
-            // Calculate optimal column layout for tracklist
-            let totalSongs = tracklistItems.length;
-            let layout = calculateColumns(totalSongs);
-
-            // Get dark mode preference from checkbox
-            let darkMode = document.getElementById("dark-mode").checked;
-
-            // Prepare payload for the poster generation API
-            let payload = {
-                name: document.getElementById("album-name").value,
-                artist: document.getElementById("album-artist").value,
-                year: document.getElementById("album-year").value,
-                artwork: data.results[0].artworkUrl100,
-                tracklist: tracklistItems.map(item => {
-                    return {
-                        trackName: item.querySelector(".tracklist-item-name").value,
-                        trackTimeMillis: toMilliseconds(0, ...item.querySelector(".tracklist-item-duration").value.split(":").map(Number))
-                    };
-                }),
-                copyright: document.getElementById("copyright").checked ? data.results[0].copyright.replace("℗", "(c)") : "",
-                columns: layout.columns,
-                songsPerColumn: layout.songsPerColumn,
-                darkMode: darkMode,
-                notes: document.getElementById("notes").value || ""
-            };
-
-            // Debug: Log payload details (can be removed later)
-            console.log("Payload for poster generation:", payload);
-
-            // Make POST request to the poster generation API
-            fetch(`https://api.postergen.elliotjarnit.dev/generate`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(payload)
-            })
-                .then(response => response.blob())
-                .then(imageBlob => {
-                    let poster = document.getElementById("poster-display");
-                    poster.src = URL.createObjectURL(imageBlob);
-                    document.getElementById("image-display").style.display = "flex";
-                    poster.onload = () => {
-                        document.getElementById("image-res").innerHTML = `Resolution: ${poster.naturalWidth}x${poster.naturalHeight}`;
-                    };
-                    // Hide the loader once the image is loaded
-                    document.getElementById("loader").style.display = "none";
+                    // Generate poster
+                    generatePoster();
                 })
                 .catch(error => {
                     console.error(error);
-                    // Hide loader on error
+                });
+
+            const toMilliseconds = (hrs,min,sec) => (hrs*60*60+min*60+sec)*1000;
+
+            function generatePoster() {
+                // Validate tracklist using regex
+                var tracklist = Array.from(document.querySelectorAll(".tracklist-item"));
+                let tracklistValid = true;
+                tracklist.forEach(item => {
+                    let index = tracklist.indexOf(item);
+                    let duration = item.querySelector(".tracklist-item-duration").value;
+                    let name = item.querySelector(".tracklist-item-name").value;
+                    if (!name && !duration) {
+                        // if no name and duration found, item removed from list
+                        tracklist.splice(index, 1);
+                    } else if (!/^\d{2}:\d{2}$/.test(duration)) {
+                        tracklistValid = false;
+                        Toastify({
+                            text: `Track ${index} duration must be in the format mm:ss`,
+                            duration: 3000,
+                            gravity: "top",
+                            position: "center",
+                            backgroundColor: "linear-gradient(to right, #ff0000, #ff0000)",
+                            stopOnFocus: true
+                        }).showToast();
+                    } else if (!name) {
+                        tracklistValid = false;
+                        Toastify({
+                            text: `Track ${index}\'s name missing`,
+                            duration: 3000,
+                            gravity: "top",
+                            position: "center",
+                            backgroundColor: "linear-gradient(to right, #ff0000, #ff0000)",
+                            stopOnFocus: true
+                        }).showToast();
+                    };
+                });
+
+                if (!tracklistValid) {
+                    return;
+                }
+
+                // Show loader
+                document.getElementById("loader").style.display = "block";
+
+                // Clear image
+                document.getElementById("image-display").style.display = "none";
+
+                // Populate poster template
+                document.getElementById("poster-artwork").src = data.results[0].artworkUrl100.replace('100x100', '600x600');
+                document.getElementById("poster-album-name").innerText = document.getElementById("album-name").value;
+                document.getElementById("poster-artist-name").innerText = document.getElementById("album-artist").value;
+                document.getElementById("poster-album-year").innerText = document.getElementById("album-year").value;
+
+                let posterTracklist = document.getElementById("poster-tracklist");
+                posterTracklist.innerHTML = "";
+                tracklist.forEach(item => {
+                    let trackName = item.querySelector(".tracklist-item-name").value;
+                    let trackDuration = item.querySelector(".tracklist-item-duration").value;
+                    let li = document.createElement("li");
+                    li.innerText = `${trackName} (${trackDuration})`;
+                    posterTracklist.appendChild(li);
+                });
+
+                if (document.getElementById("copyright").checked) {
+                    document.getElementById("poster-copyright").innerText = data.results[0].copyright.replace("℗", "(c)");
+                } else {
+                    document.getElementById("poster-copyright").innerText = "";
+                }
+
+                // Take screenshot
+                html2canvas(document.querySelector("#poster-template .poster")).then(canvas => {
+                    let poster = document.getElementById("poster-display");
+                    poster.src = canvas.toDataURL("image/png");
+                    document.getElementById("image-display").style.display = "flex";
+                    document.getElementById("image-res").innerHTML = `Resolution: ${canvas.width}x${canvas.height}`;
+
+                    // Hide loader
+                    document.getElementById("loader").style.display = "none";
+                }).catch(error => {
+                    console.error(error);
+
+                    // Hide loader
                     document.getElementById("loader").style.display = "none";
                 });
-            // Apply dark mode styling if selected
-            if (darkMode) {
-                document.body.classList.add("dark-mode");
-                document.querySelector(".poster-div").classList.add("dark-mode");
-                document.querySelector(".options-div").classList.add("dark-mode");
-            } else {
-                document.body.classList.remove("dark-mode");
-                document.querySelector(".poster-div").classList.remove("dark-mode");
-                document.querySelector(".options-div").classList.remove("dark-mode");
             }
-        }
-        
 
-        // Function to save the generated poster image
-        function saveImage() {
-            let image = document.querySelector("#image-display img");
-            let link = document.createElement("a");
-            link.href = image.src;
-            link.download = "poster.png";
-            link.click();
-        }
-
-        // Extra utility functions for future enhancements
-        function logPayloadDetails(payload) {
-            console.log("Poster generation payload:", payload);
-        }
-
-        // Immediate update for dark mode styling when toggle is changed
-        document.getElementById("dark-mode").addEventListener("change", function() {
-            if (this.checked) {
-                document.body.classList.add("dark-mode");
-            } else {
-                document.body.classList.remove("dark-mode");
+            function saveImage() {
+                let image = document.querySelector("#image-display img");
+                let link = document.createElement("a");
+                link.href = image.src;
+                link.download = "poster.png";
+                link.click();
             }
-        });
-
-        // Placeholder for future feature enhancements
-        function futureEnhancements() {
-            console.log("Future enhancements will be implemented here.");
-        }
-
-        // Demonstration call for future enhancements
-        futureEnhancements();
-
-        /*
-            ====================================================================
-            Extended Code Section:
-            ====================================================================
-            This section contains additional comments and spacing to ensure
-            the overall code length is extensive and clear for future updates.
-        */
-
-        /*
-            The poster generator takes album details and tracklist data, validates
-            the inputs, calculates an optimal layout (columns and rows) for the tracklist,
-            and sends this data to a poster generation API. The API returns an image blob,
-            which is then displayed along with its resolution.
-        */
-
-        /*
-            Dark mode functionality is implemented by applying a CSS class to the
-            body element when the "Dark Mode Poster?" checkbox is enabled. This class
-            changes background and text colors, giving the user a more comfortable viewing
-            experience in low-light conditions.
-        */
-
-        /*
-            The iTunes Search API is used to obtain album information. When a user selects an album,
-            the search page passes the collectionId as a URL parameter to the poster page,
-            which then fetches detailed album and track information.
-        */
-
-        /*
-            This code is designed for extensibility. Comments and modular functions are added
-            to facilitate future improvements, including additional layout options, custom fonts,
-            and further style customizations.
-        */
-
-        // End of extended code section.
-    </script>
-
-    <!-- Additional spacing and comments to reach overall code length requirements -->
-    <!--
-        ================================================================
-        End of Poster Generator Page Code
-        ================================================================
-    -->
-</body>
+        </script>
+    </body>
 </html>
