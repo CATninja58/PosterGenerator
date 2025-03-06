@@ -168,8 +168,8 @@
             }
 
             .poster {
-                width: 800px;
-                height: 1200px;
+                width: 1440px;
+                height: 1920px;
                 background-color: white;
                 display: flex;
                 flex-direction: column;
@@ -184,7 +184,18 @@
                 height: auto;
             }
 
-            .poster h1, .poster h2, .poster p {
+            .poster h1 {
+                font-size: 48px;
+                margin: 10px 0;
+            }
+
+            .poster p {
+                font-size: 20px;
+                margin: 10px 0;
+            }
+
+            .poster h2 {
+                font-size: 30px;
                 margin: 10px 0;
             }
 
@@ -199,8 +210,32 @@
 
             .poster-header {
                 display: flex;
-                justify-content: space-between;
+                flex-direction: column;
+                align-items: center;
                 width: 100%;
+            }
+
+            .poster-header h1 {
+                font-size: 48px;
+                margin: 10px 0;
+            }
+
+            .poster-header p {
+                font-size: 20px;
+                margin: 5px 0;
+            }
+
+            .poster-header h2 {
+                font-size: 30px;
+                margin: 10px 0;
+                align-self: flex-start;
+            }
+
+            .divider {
+                width: 100%;
+                height: 2px;
+                background-color: rgb(15, 20, 30);
+                margin: 20px 0;
             }
         </style>
     </head>
@@ -262,6 +297,7 @@
                     <p id="poster-album-year"></p>
                     <h2 id="poster-artist-name"></h2>
                 </div>
+                <div class="divider"></div>
                 <ul id="poster-tracklist"></ul>
                 <p id="poster-copyright"></p>
             </div>
