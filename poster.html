@@ -325,20 +325,20 @@
         const toMilliseconds = (hrs, min, sec) => (hrs * 60 * 60 + min * 60 + sec) * 1000;
 
         function calculateColumns(totalSongs) {
-            let desiredColumns = parseInt(document.getElementById("column-preference").value) || 4;
+            let desiredColumns = parseInt(document.getElementById("column-preference").value) || Math.ceil(totalSongs / 8);
             let columns = desiredColumns;
             let songsPerColumn = Math.ceil(totalSongs / columns);
 
             // Ensure no more than 8 songs per column
             while (songsPerColumn > 8 && columns < totalSongs) {
-            columns++;
-            songsPerColumn = Math.ceil(totalSongs / columns);
+                columns++;
+                songsPerColumn = Math.ceil(totalSongs / columns);
             }
 
             // Adjust columns if the total songs do not fit perfectly
             while (totalSongs % columns !== 0 && columns > 1) {
-            columns--;
-            songsPerColumn = Math.ceil(totalSongs / columns);
+                columns--;
+                songsPerColumn = Math.ceil(totalSongs / columns);
             }
 
             return { columns: columns, songsPerColumn: songsPerColumn };
